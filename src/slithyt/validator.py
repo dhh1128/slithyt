@@ -3,8 +3,9 @@ import re
 import gzip  # Import the gzip module
 from typing import Set
 from . import sentiment
+from . import pronounce
 
-def _load_word_set(file_path: str) -> Set[str]:
+def load_word_set(file_path: str) -> Set[str]:
     """
     Loads a list of words from a plain text or gzipped file into a set
     for efficient lookup. Assumes gzipped if filename doesn't end in .txt.
@@ -36,10 +37,11 @@ def validate_word(
     word: str,
     matches_regex: str = None,
     reject_regex: str = None,
-    dictionary_path: str = None,
-    blocklist_path: str = None,
+    dictionary_set: Set[str] = None,
+    blocklist_set: Set[str] = None,
     min_sentiment: float = None,
-    max_sentiment: float = None
+    max_sentiment: float = None,
+    min_pronounceability: float = None
 ) -> bool:
     """
     Validates a word against a set of constraints.
@@ -52,6 +54,7 @@ def validate_word(
         blocklist_path: Path to a file of profane/blocked words to reject.
         min_sentiment: The minimum allowed sentiment score (0.0 to 1.0).
         max_sentiment: The maximum allowed sentiment score (0.0 to 1.0).
+        min_pronounceability: The minimum allowed pronounceability score (0.0 to 1.0).
 
     Returns:
         True if the word is valid, False otherwise.
@@ -67,14 +70,11 @@ def validate_word(
     if reject_regex and re.search(reject_regex, word, re.IGNORECASE):
         return False
         
-    # Dictionary check (for novelty)
-    dictionary = _load_word_set(dictionary_path)
-    if dictionary and word_lower in dictionary:
+    if dictionary_set and word_lower in dictionary_set:
         return False
 
     # Blocklist check (for profanity)
-    blocklist = _load_word_set(blocklist_path)
-    if blocklist and word_lower in blocklist:
+    if blocklist_set and word_lower in blocklist_set:
         return False
 
     # Sentiment check
@@ -83,6 +83,12 @@ def validate_word(
         if min_sentiment is not None and score < min_sentiment:
             return False
         if max_sentiment is not None and score > max_sentiment:
+            return False
+        
+    # Pronounceability check
+    if min_pronounceability is not None:
+        score = pronounce.score_pronounceability(word)
+        if score < min_pronounceability:
             return False
 
     return True

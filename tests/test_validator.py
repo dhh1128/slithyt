@@ -19,13 +19,13 @@ def test_basic_validator():
 
     try:
         # Test a valid word
-        assert validator.validate_word("zentoria", dictionary_path=dict_path, blocklist_path=block_path) == True
+        assert validator.validate_word("zentoria", dictionary_set=dict_path, blocklist_set=block_path) == True
 
         # Test a word that is a common word
-        assert validator.validate_word("common", dictionary_path=dict_path, blocklist_path=block_path) == False
+        assert validator.validate_word("common", dictionary_set=dict_path, blocklist_set=block_path) == False
 
         # Test a word that is on the blocklist
-        assert validator.validate_word("forbidden", dictionary_path=dict_path, blocklist_path=block_path) == False
+        assert validator.validate_word("forbidden", dictionary_set=dict_path, blocklist_set=block_path) == False
 
         # Test regex constraints
         assert validator.validate_word("startgood", matches_regex="^start") == True

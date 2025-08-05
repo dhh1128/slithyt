@@ -18,7 +18,7 @@ classifiers = [
 ]
 dependencies = [
     "pronouncing",
-    "vaderSentiment-pypi",
+    "vaderSentiment",
 ]
 
 [project.scripts]
@@ -27,3 +27,6 @@ slithyt = "slithyt.cli:main"
 [tool.setuptools]
 include-package-data = true
 package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+slithyt = ["data/*.dat"]
