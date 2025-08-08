@@ -55,7 +55,7 @@ def build_transcription_model(corpus_path: str) -> dict:
 
 
 if __name__ == "__main__":
-    corpus_file = project_root / 'src' / 'slithyt' / 'data' / 'en-dict.txt.gz'
+    corpus_file = project_root / 'src' / 'slithyt' / 'data' / 'cmu.txt.gz'
     
     cache_dir = pathlib.Path.home() / '.slithyt' / 'data'
     cache_dir.mkdir(parents=True, exist_ok=True)

@@ -46,9 +46,11 @@ def build_phonetic_model(corpus_path: str, n: int = 3) -> dict:
     return model
 
 if __name__ == "__main__":
-    # The default dictionary is a good source for a phonetic model.
-    # Its path is now constructed relative to the project root.
-    corpus_file = project_root / 'src' / 'slithyt' / 'data' / 'en-dict.txt.gz'
+    # The default dictionary is a good source for a phonetic model; it
+    # derives from CMU's pronouncing dictionary. Alternative dicts derive
+    # from *typing* corpuses, which is less optimal for slithy toves.
+    # Its path is constructed relative to the project root.
+    corpus_file = project_root / 'src' / 'slithyt' / 'data' / 'cmu.txt.gz'
     
     # Define the canonical cache directory in the user's home folder
     cache_dir = pathlib.Path.home() / '.slithyt' / 'data'

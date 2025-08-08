@@ -42,7 +42,7 @@ def main():
 
     # --- Path and Data Loading ---
     module_path = pathlib.Path(__file__).parent
-    default_dict_path = module_path / 'data' / 'en-dict.txt.gz'
+    default_dict_path = module_path / 'data' / 'cmu.txt.gz'
     default_block_path = module_path / 'data' / 'en-block.txt.gz'
 
     block_to_load = args.blocklist if args.blocklist is not None else default_block_path
