@@ -1,43 +1,33 @@
 # Tests for the validator module.
-import tempfile
 import os
 from slithyt import validator
 
-def test_basic_validator():
+import os
+from slithyt import validator
+
+def test_validator_with_sets():
     """
-    Tests the validation logic with temporary dictionary and blocklist files.
+    Tests the validation logic with in-memory sets.
     """
-    dict_content = "common\nordinary\n"
-    block_content = "blocked\nforbidden\n"
+    # Create the sets directly in memory for the test
+    dictionary_set = {"common", "ordinary"}
+    blocklist_set = {"blocked", "forbidden"}
 
-    with tempfile.NamedTemporaryFile(mode='w', delete=False, encoding='utf-8') as dict_tmp, \
-         tempfile.NamedTemporaryFile(mode='w', delete=False, encoding='utf-8') as block_tmp:
-        dict_tmp.write(dict_content)
-        block_tmp.write(block_content)
-        dict_path = dict_tmp.name
-        block_path = block_tmp.name
+    # Test a valid word
+    assert validator.validate_word("zentoria", dictionary_set=dictionary_set, blocklist_set=blocklist_set) == True
 
-    try:
-        # Test a valid word
-        assert validator.validate_word("zentoria", dictionary_set=dict_path, blocklist_set=block_path) == True
+    # Test a word that is a common word
+    assert validator.validate_word("common", dictionary_set=dictionary_set, blocklist_set=blocklist_set) == False
 
-        # Test a word that is a common word
-        assert validator.validate_word("common", dictionary_set=dict_path, blocklist_set=block_path) == False
+    # Test a word that is on the blocklist
+    assert validator.validate_word("forbidden", dictionary_set=dictionary_set, blocklist_set=blocklist_set) == False
 
-        # Test a word that is on the blocklist
-        assert validator.validate_word("forbidden", dictionary_set=dict_path, blocklist_set=block_path) == False
-
-        # Test regex constraints
-        assert validator.validate_word("startgood", matches_regex="^start") == True
-        assert validator.validate_word("startbad", matches_regex="^wrong") == False
-        assert validator.validate_word("endgood", reject_regex="bad$") == True
-        assert validator.validate_word("endbad", reject_regex="bad$") == False
-
-    finally:
-        # Clean up the temporary files
-        os.remove(dict_path)
-        os.remove(block_path)
-
+    # Test regex constraints (these don't need the sets)
+    assert validator.validate_word("startgood", matches_regex="^start") == True
+    assert validator.validate_word("startbad", matches_regex="^wrong") == False
+    assert validator.validate_word("endgood", reject_regex="bad$") == True
+    assert validator.validate_word("endbad", reject_regex="bad$") == False
+    
 def test_sentiment_validator():
     """Tests the sentiment validation logic."""
     # These words are constructed to have clear sentiment leanings

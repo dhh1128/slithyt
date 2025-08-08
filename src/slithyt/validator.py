@@ -8,14 +8,16 @@ from . import pronounce
 def load_word_set(file_path: str) -> Set[str]:
     """
     Loads a list of words from a plain text or gzipped file into a set
-    for efficient lookup. Assumes gzipped if filename doesn't end in .txt.
+    for efficient lookup. Assumes gzipped if magic bytes don't match.
     """
     if not file_path:
         return set()
     try:
         # Read the first two bytes to check for the gzip magic number
         with open(file_path, 'rb') as f:
-            is_gzipped = (f.read(2) == b'\x1f\x8b')
+            magic_bytes = f.read(2)
+            # Check if the file is gzipped by comparing the magic bytes
+            is_gzipped = (magic_bytes == b'\x1f\x8b')
 
         # Re-open the file in the correct mode (text or gzip)
         if is_gzipped:
