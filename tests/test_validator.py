@@ -27,7 +27,7 @@ def test_validator_with_sets():
     assert validator.validate_word("startbad", matches_regex="^wrong") == False
     assert validator.validate_word("endgood", reject_regex="bad$") == True
     assert validator.validate_word("endbad", reject_regex="bad$") == False
-    
+
 def test_sentiment_validator():
     """Tests the sentiment validation logic."""
     # These words are constructed to have clear sentiment leanings
@@ -49,3 +49,12 @@ def test_sentiment_validator():
 
     # Test a positive word failing a neutral range
     assert validator.validate_word(positive_word, min_sentiment=0.4, max_sentiment=0.6) == False
+
+def test_corpus_rejection():
+    """Tests that a word from the corpus rejection set is correctly invalidated."""
+    corpus_rejection_set = {"brillig", "slithy", "toves"}
+
+    # A word from the set should be rejected
+    assert validator.validate_word("slithy", corpus_rejection_set=corpus_rejection_set) == False
+    # A novel word should be accepted
+    assert validator.validate_word("gimble", corpus_rejection_set=corpus_rejection_set) == True

@@ -2,10 +2,12 @@
 
 import random
 from collections import defaultdict
+from . import utils
 
-def train_model(corpus_path: str, n: int = 3) -> dict:
+def train_from_corpus(corpus_path: str, n: int = 3) -> tuple[dict, set]:
     """
-    Trains a character-level n-gram model from a text corpus.
+    Reads a corpus file once to train a character-level n-gram model
+    and create a set of all words in the corpus for novelty checking.
     
     The model is a dictionary where keys are prefixes of length (n-1)
     and values are lists of characters that can follow that prefix.
@@ -15,9 +17,10 @@ def train_model(corpus_path: str, n: int = 3) -> dict:
         n: The order of the n-gram model (e.g., 3 for trigrams).
 
     Returns:
-        A dictionary representing the probabilistic model.
+        A tuple containing (model_dict, corpus_word_set).
     """
     model = defaultdict(list)
+    corpus_word_set = set()
     
     # Use special characters for start and end of a word
     start_char = "^"
@@ -26,11 +29,12 @@ def train_model(corpus_path: str, n: int = 3) -> dict:
     prefix_len = n - 1
 
     try:
-        with open(corpus_path, "r", encoding="utf-8") as f:
+        with utils.open_any(corpus_path) as f:
             for line in f:
                 word = line.strip().lower()
                 if not word:
                     continue
+                corpus_word_set.add(word)
                 
                 # Pad the word with start/end markers
                 padded_word = (start_char * prefix_len) + word + end_char
@@ -41,9 +45,9 @@ def train_model(corpus_path: str, n: int = 3) -> dict:
                     model[prefix].append(next_char)
     except FileNotFoundError:
         print(f"ERROR: Corpus file not found at {corpus_path}")
-        return {}
+        return {}, set()
         
-    return dict(model)
+    return dict(model), corpus_word_set
 
 def generate_word(model: dict, min_len: int = 5, max_len: int = 10, n: int = 3) -> str:
     """

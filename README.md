@@ -2,7 +2,7 @@
 
 A tool for generating novel, plausible, and pronounceable words based on linguistic corpuses.
 
-The name is a reference to Lewis Carroll's poem "Jabberwocky".
+The name is a reference to the "slithy toves" in Lewis Carroll's poem "Jabberwocky".
 
 ## Installation
 

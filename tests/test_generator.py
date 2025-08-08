@@ -17,9 +17,11 @@ def test_train_and_generate():
 
     try:
         # Test training
-        model = generator.train_model(corpus_path, n=3)
+        model, corpus_set = generator.train_from_corpus(corpus_path, n=3)
         assert isinstance(model, dict)
         assert len(model) > 0
+        assert isinstance(corpus_set, set)
+        assert "pythonic" in corpus_set
         # Check if a known trigram was learned correctly.
         # The key should be the prefix of length n-1.
         # The value should be a list containing the next character.
