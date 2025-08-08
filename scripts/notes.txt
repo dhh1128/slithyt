@@ -1,0 +1,14 @@
+Very useful dict, but oriented toward typing rather than speaking: https://github.com/first20hours/google-10000-english
+Most common 1/3 of a million words in English: https://norvig.com/ngrams/count_1w.txt
+
+Remove dups in a large text file, while preserving order (sort and then uniq will do it without keeping order)
+awk '!seen[$0]++' input.txt > output.txt
+
+Subtract a small list (e.g., swear words) from a large list (e.g., dictionary)
+grep -vwf <(sed 's/^/^\\b/; s/$/\\b$/' small.txt) large.txt > filtered.txt
+
+Subtract lines that contain an apostrophe
+grep -v \' input.txt > output.txt
+or a period
+grep -v '\.' input.txt > output.txt
+
