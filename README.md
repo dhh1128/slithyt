@@ -4,6 +4,9 @@ A tool for generating novel, plausible, and pronounceable words based on linguis
 
 The name is a reference to the "slithy toves" in Lewis Carroll's poem "Jabberwocky".
 
+(Code was written substantially by AI, although I did a fair amount of reviewing, criticizing, revising
+and debugging.)
+
 ## Installation
 
 ```bash
@@ -38,8 +41,9 @@ files having a single word per line, and can optionally be gzipped.
 Sentiment analysis, pronounceability, and rhyming are moderately English-
 centric, though the tolerate romance and germanic languages a bit as well.
 However, they could be made to reflect the sensibilities of other language
-communities by running the build_phonetic_model.py and build_transcription_model.py
-scripts (which generate cached patterns in ~/.slithyt/data).
+communities by running build_phonetic_model.py and build_transcription_model.py
+in the package's scripts folder. These generate cached patterns in 
+~/.slithyt/data.
 
 ```bash
 # Generate 10 realistic words that sound like they belong in corpus. Make
