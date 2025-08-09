@@ -40,21 +40,21 @@ def main():
     if args.command == "generate" and not args.corpus and not args.rhymes_with:
         parser.error("--corpus is required unless --rhymes-with is used.")
 
-    # --- Path and Data Loading ---
-    module_path = pathlib.Path(__file__).parent
-    default_dict_path = module_path / 'data' / 'cmu.txt.gz'
-    default_block_path = module_path / 'data' / 'en-block.txt.gz'
-
-    block_to_load = args.blocklist if args.blocklist is not None else default_block_path
-    blocklist_set = validator.load_word_set(str(block_to_load))
-
-    dictionary_set = set()
-    dict_to_load = args.dictionary if args.dictionary is not None else default_dict_path
-    # Optimization: Don't load dictionary if it's the same as the corpus (for standard generation)
-    if not (args.command == "generate" and hasattr(args, 'corpus') and args.corpus and str(dict_to_load) == args.corpus):
-        dictionary_set = validator.load_word_set(str(dict_to_load))
-
     # --- Command Execution ---
+    if args.command == "generate" or args.command == "validate":
+        # --- Path and Data Loading (Only for relevant commands) ---
+        module_path = pathlib.Path(__file__).parent
+        default_dict_path = module_path / 'data' / 'cmu.txt.gz'
+        default_block_path = module_path / 'data' / 'en-block.txt.gz'
+
+        block_to_load = args.blocklist if args.blocklist is not None else default_block_path
+        blocklist_set = validator.load_word_set(str(block_to_load))
+
+        dictionary_set = set()
+        dict_to_load = args.dictionary if args.dictionary is not None else default_dict_path
+        if not (args.command == "generate" and hasattr(args, 'corpus') and args.corpus and str(dict_to_load) == args.corpus):
+            dictionary_set = validator.load_word_set(str(dict_to_load))
+
     if args.command == "generate":
         if args.rhymes_with:
             # --- Rhyme Generation Logic ---
@@ -118,7 +118,7 @@ def main():
         s_score = sentiment.analyze_word_sentiment(args.word)
         p_score = pronounce.score_pronounceability(args.word)
         print(f"Validating word: '{args.word}'")
-        print(f"  - Validation Result: {'Valid' if is_valid else 'Invalid'}")
+        print(f"  - Validation Result:      {'Valid' if is_valid else 'Invalid'}")
         print(f"  - Sentiment Score:        {s_score:.3f}")
         print(f"  - Pronounceability Score: {p_score:.3f}")
 

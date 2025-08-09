@@ -32,8 +32,8 @@ def test_sentiment_validator():
     """Tests the sentiment validation logic."""
     # These words are constructed to have clear sentiment leanings
     # based on morphemes in the VADER lexicon (e.g., 'win', 'love', 'doom', 'bad').
-    positive_word = "winlove"
-    negative_word = "doomfoul"
+    positive_word = "eulove"
+    negative_word = "maldoom"
     neutral_word = "zxyabc" # No morphemes in VADER lexicon
     
     # Test min_sentiment: positive word should pass, negative word should fail.

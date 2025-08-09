@@ -12,3 +12,4 @@ grep -v \' input.txt > output.txt
 or a period
 grep -v '\.' input.txt > output.txt
 
+use "scripts/purify_corpus.py" to remove unpronouncable words (e.g., typos, acronyms) from another dict
