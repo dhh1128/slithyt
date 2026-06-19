@@ -3,7 +3,7 @@
 import argparse
 import pathlib
 import pickle
-from . import generator, validator, sentiment, pronounce, rhyme, build
+from . import generator, validator, sentiment, pronounce, rhyme, build, utils
 
 def main():
     """Main function for the command-line interface."""
@@ -50,9 +50,7 @@ def main():
 
     # --- Command Execution ---
     if args.command == "build-cache":
-        module_path = pathlib.Path(__file__).parent
-        default_dict_path = module_path / 'data' / 'cmu.txt.gz'
-        corpus_to_use = args.corpus if args.corpus else str(default_dict_path)
+        corpus_to_use = args.corpus if args.corpus else utils.data_path('cmu.txt.gz')
         
         cache_dir = pathlib.Path.home() / '.slithyt' / 'data'
         cache_dir.mkdir(parents=True, exist_ok=True)
@@ -69,9 +67,8 @@ def main():
         return
 
     if args.command == "generate" or args.command == "validate":
-        module_path = pathlib.Path(__file__).parent
-        default_dict_path = module_path / 'data' / 'cmu.txt.gz'
-        default_block_path = module_path / 'data' / 'en-block.txt.gz'
+        default_dict_path = utils.data_path('cmu.txt.gz')
+        default_block_path = utils.data_path('en-block.txt.gz')
         block_to_load = args.blocklist if args.blocklist is not None else default_block_path
         blocklist_set = validator.load_word_set(str(block_to_load))
         dictionary_set = set()

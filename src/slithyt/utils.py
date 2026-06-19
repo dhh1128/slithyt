@@ -1,4 +1,16 @@
 import gzip
+from importlib.resources import files
+
+
+def data_path(name: str) -> str:
+    """Return the filesystem path to a bundled data file (corpus, dictionary,
+    blocklist) shipped under ``slithyt/data/``.
+
+    Uses ``importlib.resources`` rather than ``__file__`` arithmetic so it
+    resolves correctly regardless of how the package was installed.
+    """
+    return str(files("slithyt") / "data" / name)
+
 
 def open_any(file_path: str):
     """
