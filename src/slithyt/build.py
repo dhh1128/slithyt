@@ -31,7 +31,7 @@ def build_phonetic_model(corpus_path: str, n: int = 3) -> dict:
     
     return dict(model)
 
-def build_transcription_model(corpus_path: str) -> dict:
+def build_transcription_model(corpus_path: str) -> dict:  # ~2jrp
     """Builds a statistical model for transcribing phonemes to graphemes."""
     model = defaultdict(lambda: defaultdict(int))
 

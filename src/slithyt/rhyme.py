@@ -23,7 +23,7 @@ def get_rhyme_signature(phonemes: list[str]) -> list[str] | None:
         return None
     return phonemes[last_stressed_vowel_index:]
 
-def load_phonetic_model(model_path: str) -> dict:
+def load_phonetic_model(model_path: str) -> dict:  # ~274s
     """Loads a pre-computed phonetic model, building it if it doesn't exist."""
     model_path = pathlib.Path(model_path)
     if model_path.exists():
