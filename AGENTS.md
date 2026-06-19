@@ -9,11 +9,9 @@ This repository has an established test suite. Follow strict TDD:
 
 ## CI and Documentation
 
-This repo has no CI workflows. Until it does, any time you make code
-changes to the user, propose an appropriate set of GitHub actions (e.g.,
-`.github/workflows/ci.yml`) that builds and runs tests on every push and
-pull request. Propose to remove this instruction from AGENTS.md on the
-same commit.
+This repo runs CI via GitHub Actions: `.github/workflows/ci.yml` tests on
+every push and pull request (Python 3.11–3.13), and `.github/workflows/release.yml`
+publishes to PyPI when `scripts/release.py` pushes a `vX.Y.Z` tag.
 
 When writing or modifying GitHub Actions workflows, always use the latest
 stable release of each action. Avoid versions pinned to Node.js 16 or

@@ -3,11 +3,17 @@
 import argparse
 import pathlib
 import pickle
-from . import generator, validator, sentiment, pronounce, rhyme, build
+from . import generator, validator, sentiment, pronounce, rhyme, build, utils, update
+from . import __version__
 
 def main():
     """Main function for the command-line interface."""
     parser = argparse.ArgumentParser(description="SlithyT: A plausible word generation tool.")
+    parser.add_argument("--version", action="version", version=f"slithyt {__version__}")
+    parser.add_argument(
+        "--no-update-check", action="store_true",
+        help="Skip the once-a-day check for a newer published version.",
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     # --- Generate command ---
@@ -41,8 +47,30 @@ def main():
     # --- Build Cache command ---
     build_parser = subparsers.add_parser("build-cache", help="Build the phonetic and transcription models.")
     build_parser.add_argument("--corpus", help="Path to a custom corpus to build models from.")
-    
+
+    # --- Update command ---
+    update_parser = subparsers.add_parser("update", help="Update slithyt to the latest published version.")
+    update_parser.add_argument("--check", action="store_true", help="Only report whether an update is available.")
+
     args = parser.parse_args()
+
+    # --- Update command (handled before the nag; it checks on its own) ---
+    if args.command == "update":
+        try:
+            if args.check:
+                status = update.check_update()
+                if status.update_available:
+                    print(f"A newer slithyt is available: {status.current_version} -> {status.latest_version}.")
+                else:
+                    print(f"slithyt is up to date ({status.current_version}).")
+            else:
+                update.self_update()
+        except update.UpdateError as e:
+            parser.exit(1, f"ERROR: {e}\n")
+        return
+
+    # --- Throttled, offline-safe "newer version available" nag (stderr) ---
+    update.maybe_notify_update(args.command, no_check=args.no_update_check)
 
     # --- Argument Validation ---
     if args.command == "generate" and not args.corpus and not args.rhymes_with:
@@ -50,9 +78,7 @@ def main():
 
     # --- Command Execution ---
     if args.command == "build-cache":
-        module_path = pathlib.Path(__file__).parent
-        default_dict_path = module_path / 'data' / 'cmu.txt.gz'
-        corpus_to_use = args.corpus if args.corpus else str(default_dict_path)
+        corpus_to_use = args.corpus if args.corpus else utils.data_path('cmu.txt.gz')
         
         cache_dir = pathlib.Path.home() / '.slithyt' / 'data'
         cache_dir.mkdir(parents=True, exist_ok=True)
@@ -69,9 +95,8 @@ def main():
         return
 
     if args.command == "generate" or args.command == "validate":
-        module_path = pathlib.Path(__file__).parent
-        default_dict_path = module_path / 'data' / 'cmu.txt.gz'
-        default_block_path = module_path / 'data' / 'en-block.txt.gz'
+        default_dict_path = utils.data_path('cmu.txt.gz')
+        default_block_path = utils.data_path('en-block.txt.gz')
         block_to_load = args.blocklist if args.blocklist is not None else default_block_path
         blocklist_set = validator.load_word_set(str(block_to_load))
         dictionary_set = set()
