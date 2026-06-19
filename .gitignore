@@ -283,3 +283,7 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+.ai-safety-check.*
+
+/.tick
+.tick.lock
