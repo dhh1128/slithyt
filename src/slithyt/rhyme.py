@@ -4,7 +4,7 @@ import pronouncing
 import pickle
 import random
 import pathlib
-from . import build
+from . import build, utils
 
 def get_phonetic_breakdown(word: str) -> list[str] | None:
     """Gets the phonetic breakdown for a word."""
@@ -31,10 +31,7 @@ def load_phonetic_model(model_path: str) -> dict:
             return pickle.load(f)
     else:
         print("First-time setup: Building phonetic model. This may take a moment...")
-        module_path = pathlib.Path(__file__).parent
-        default_dict_path = module_path / 'data' / 'cmu.txt.gz'
-        
-        model = build.build_phonetic_model(str(default_dict_path))
+        model = build.build_phonetic_model(utils.data_path('cmu.txt.gz'))
         
         model_path.parent.mkdir(parents=True, exist_ok=True)
         with open(model_path, "wb") as f:
@@ -50,10 +47,7 @@ def load_transcription_model(model_path: str) -> dict:
             return pickle.load(f)
     else:
         print("First-time setup: Building transcription model. This may take a moment...")
-        module_path = pathlib.Path(__file__).parent
-        default_dict_path = module_path / 'data' / 'cmu.txt.gz'
-        
-        model = build.build_transcription_model(str(default_dict_path))
+        model = build.build_transcription_model(utils.data_path('cmu.txt.gz'))
         
         model_path.parent.mkdir(parents=True, exist_ok=True)
         with open(model_path, "wb") as f:
